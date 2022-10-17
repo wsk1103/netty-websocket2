@@ -1,25 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>客户端</title>
+    <meta charset="UTF-8">
+    <title>客户端</title>
 </head>
 <body>
 <form onsubmit="return false">
 
-  <input type="text" value="userName" id="userName" name="message"/>
-  <input type="text" value="10086" id="roomId" name="message"/>
-  <input type="text" value="10087" id="toRoomId" name="message"/>
-  <button value="10086" id="go" name="message" onclick="go9();">连接</button>
-  <textarea name="message" id="message" style="width: 400px;height: 200px"></textarea>
+    <input type="text" value="userName" id="userName" name="message"/>
+    <div>
+        <span>自身</span>
+        <input type="text" value="10087" id="roomId" name="message"/>
+    </div>
+    <div>
+        <span>目标</span>
+        <input type="text" value="10087" id="toRoomId" name="message"/>
+    </div>
+    <button value="10086" id="go" name="message" onclick="go9()">连接</button>
+    <br/>
+    <button value="10086" id="close9" name="message" onclick="cls()">关闭</button>
+    <br/>
+    <textarea name="message" id="message" style="width: 400px;height: 200px"></textarea>
 
-  <input type="button" value="发送数据" onclick="send();">
+    <input type="button" value="发送数据" onclick="send();">
 
-  <h3>回复消息：</h3>
+    <h3>回复消息：</h3>
 
-  <textarea id="responseText" style="width: 400px;height: 300px;"></textarea>
+    <textarea id="responseText" style="width: 400px;height: 300px;"></textarea>
 
-  <input type="button" onclick="javascript:document.getElementById('responseText').value=''" value="清空数据">
+    <input type="button" onclick="javascript:document.getElementById('responseText').value=''" value="清空数据">
 </form>
 <script src="js/protobuf.js"></script>
 <!--<script src="https://cdn.rawgit.com/dcodeIO/protobuf.js/6.11.2/dist/protobuf.js"></script>-->
@@ -27,20 +36,28 @@
     var socket;
     var roomId;
     var user = document.getElementById("userName");
-    user.value = (new Date()).valueOf();;
+    user.value = (new Date()).valueOf();
+
+    function cls() {
+        if (socket != null) {
+            socket.close();
+            socket = null;
+        }
+    }
+
     function go9() {
       if (socket != null) {return;}
       roomId = document.getElementById("roomId").value;
       //如果浏览器支持WebSocket
       if (window.WebSocket) {
           //参数就是与服务器连接的地址
-          var ur = "ws://localhost:8081/websocket";
-          var token = "TT123456789";
-          var socket = new WebSocket(
-              ur,
-              //[token]
-          );
-          //socket = new WebSocket(ur);
+          var ur = "ws://localhost:7834/websocket";
+<!--          var token = "TT123456789";-->
+<!--          var socket = new WebSocket(-->
+<!--              ur,-->
+<!--              //[token]-->
+<!--          );-->
+          socket = new WebSocket(ur + "?token=1522&roomId=" + roomId);
           //socket.SetRequestHeader("Cookie", "1414141414");
           //客户端收到服务器消息的时候就会执行这个回调方法
           socket.onmessage = function (event) {
@@ -205,6 +222,8 @@
             }
         });
     }
+
+
 </script>
 
 </body>
